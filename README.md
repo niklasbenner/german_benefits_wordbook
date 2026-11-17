@@ -11,7 +11,7 @@
 2. [Files and data structure](#files-and-data-structure)
 3. [Taxonomy and attribute definitions](#taxonomy-and-attribute-definitions)
 4. [How the dictionary was constructed](#how-the-dictionary-was-constructed)
-5. [Validation design](#validation-design-and-key-findings)
+5. [Validation design](#validation-design)
 
 ### Validation summary by dimension
 
