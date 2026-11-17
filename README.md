@@ -11,7 +11,8 @@
 2. [Files and data structure](#files-and-data-structure)
 3. [Taxonomy and attribute definitions](#taxonomy-and-attribute-definitions)
 4. [How the dictionary was constructed](#how-the-dictionary-was-constructed)
-5. [Validation design and key findings](#validation-design-and-key-findings)
+5. [LLM coding prompt](#llm-coding-prompt)
+6. [Validation design and key findings](#validation-design-and-key-findings)
 
 ### Validation summary by dimension
 
@@ -42,6 +43,7 @@ The same underlying dictionary is distributed in two representations (the filena
 |:--|:--|:--|
 | `wordbook_benefits_v1.json` | Nested JSON | Direct lookup of expressions by group and individual attribute. |
 | `wordbook_benefits_v1.csv` | Flat CSV | Analysis, inspection, joins, and manual review; one row per keyword. |
+| [`classification_prompt.md`](classification_prompt.md) | Markdown | Full German-language LLM coding prompt and required JSON output specification. |
 
 ## Taxonomy and attribute definitions
 
@@ -230,6 +232,24 @@ The procedure consists of four stages:
 4. **Freeze and validate on unseen data.** Once the dictionary sufficiently reproduces the LLM-based classification during development, we **freeze the taxonomy, the coding prompt, and the keyword lists**. We then independently apply the final dictionary and the frozen Qwen coding procedure to an **out-of-sample holdout of 14,481 advertisements**. None of these held-out observations is used for adding or removing keywords, choosing thresholds, or refining prompts or category definitions. We calculate precision, recall, and F1 for each attribute and for each of the nine aggregate dimensions, where a dimension is positive if any constituent attribute is identified. The detailed results are shown in the expandable taxonomy tables above and interpreted in the [validation section](#validation-design-and-key-findings) below.
 
 The aim of this process is **not to label every conceivable mention** of a benefit: expressions are retained only where they are consistent with the substantive category definitions. The finished wordbook can therefore be applied transparently and deterministically to the full corpus of approximately **11.4 million vacancy advertisements**, **without running an LLM on individual vacancies**. As with any lexical approach, it may miss unusual paraphrases or context-specific statements; the reported validation measures describe agreement with the frozen semantic reference classification, not verified realized working conditions.
+
+## LLM coding prompt
+
+<details>
+<summary><strong>Expand: LLM instructions, category definitions and output format</strong></summary>
+
+The full **German-language prompt** used for the semantic classification is published separately as [`classification_prompt.md`](classification_prompt.md), rather than embedded in full in this README. It contains the two original prompt components:
+
+- **`prompt1` — Coding instructions and category definitions:** a multi-label task; explicit evidence required for positive classifications; exclusion of applicant requirements, negated statements, statutory minimum standards and unsupported inferences; distinctions between closely related attributes; and an additional check for benefits not covered by the taxonomy.
+- **`prompt2` — JSON output specification:** report only positively detected benefit categories with a short original evidence excerpt and a confidence value from 0 to 1, plus an `unassigned_benefit_evidence` list for potential new concepts. Omitted benefit keys indicate negative classifications.
+
+The vacancy text is inserted after the `STELLENANZEIGE:` marker at the end of `prompt1`, before the output instructions in `prompt2`.
+
+**Important for replication:** The original prompt uses German category keys such as `gehalt`, `remote` and `altersvorsorge`, whereas the published wordbook uses English `snake_case` keys such as `salary`, `remote_work` and `occupational_pension`. These identifiers require a category crosswalk when comparing LLM output with the exported CSV/JSON wordbook. The full prompt file preserves the supplied wording and identifiers.
+
+**[View the complete coding prompt →](classification_prompt.md)**
+
+</details>
 
 ## Validation design and key findings
 
