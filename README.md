@@ -1,6 +1,6 @@
 # Job Amenity Wordbook
 
-**A transparent dictionary of positively advertised job attributes in German online job vacancies.** The wordbook maps German-language expressions in vacancy advertisements to **50 distinct job attributes**, organized into **nine amenity dimensions**. It measures what employers **advertise** as attractive job conditions, not necessarily what employees ultimately experience.
+**A transparent dictionary of positively advertised job attributes in German online job vacancies.** The wordbook contains **3,628 keyword entries** assigned to **50 active job attributes** across **nine amenity dimensions**, plus **five excluded concepts**. It measures what employers **advertise** as attractive job conditions, not necessarily what employees ultimately experience.
 
 The final measurement instrument is **deterministic**: once the dictionary is frozen, applying the same expressions and matching rules to the same text produces the same indicators. Language models assisted in refining category definitions and keyword coverage during development, but are **not required for classification of the full vacancy corpus**.
 
@@ -17,8 +17,8 @@ The final measurement instrument is **deterministic**: once the dictionary is fr
 
 ## At a glance
 
-- **Nine** broad dimensions capture compensation, benefits, scheduling, employment security, career opportunities, job content, organizational culture, workplace resources, and mobility.
-- **50** active attributes are used in the baseline measures; **five** additional concepts are documented under `excluded` but excluded from baseline aggregates.
+- **3,628 keyword entries** cover **nine** broad dimensions of advertised job amenities: compensation, benefits, scheduling, employment security, career opportunities, job content, organizational culture, workplace resources, and mobility.
+- **50** active attributes contain **3,390 keyword entries**; **five** additional concepts contain **238 entries** under `excluded` and do not enter baseline aggregates.
 - The dictionary is applied to the **benefit-related sections** of German vacancy texts, identified by a separate section-classification (zoning) procedure.
 - Validation uses an **independent holdout of 14,481 job advertisements**, not used during dictionary development.
 - Aggregate-dimension F1 scores range from **0.842 to 0.962** relative to the reference classification.
@@ -26,23 +26,30 @@ The final measurement instrument is **deterministic**: once the dictionary is fr
 
 ### Validation summary by dimension
 
-| Dimension | Active attributes | Dictionary-positive share | Precision | Recall | F1 |
-|:--|--:|--:|--:|--:|--:|
-| Pay & Monetary Compensation | 6 | 57.1% | 0.971 | 0.902 | **0.935** |
-| Fringe Benefits & Perks | 7 | 57.9% | 0.972 | 0.952 | **0.962** |
-| Working Time, Flexibility & Work-Life | 10 | 59.0% | 0.967 | 0.933 | **0.950** |
-| Employment Security | 2 | 32.9% | 0.934 | 0.914 | **0.924** |
-| Career Development & Human Capital | 5 | 69.1% | 0.961 | 0.941 | **0.951** |
-| Task Content, Autonomy & Meaning | 3 | 39.8% | 0.881 | 0.814 | **0.846** |
-| Social Environment & Organizational Culture | 5 | 58.9% | 0.944 | 0.881 | **0.911** |
-| Workplace Resources, Health & Accessibility | 4 | 25.6% | 0.922 | 0.775 | **0.842** |
-| Location, Commuting & Mobility Benefits | 8 | 39.4% | 0.965 | 0.904 | **0.933** |
+| Dimension | Attributes | Keyword entries | Dictionary-positive share | Precision | Recall | F1 |
+|:--|--:|--:|--:|--:|--:|--:|
+| Pay & Monetary Compensation | 6 | 459 | 57.1% | 0.971 | 0.902 | **0.935** |
+| Fringe Benefits & Perks | 7 | 380 | 57.9% | 0.972 | 0.952 | **0.962** |
+| Working Time, Flexibility & Work-Life | 10 | 706 | 59.0% | 0.967 | 0.933 | **0.950** |
+| Employment Security | 2 | 103 | 32.9% | 0.934 | 0.914 | **0.924** |
+| Career Development & Human Capital | 5 | 473 | 69.1% | 0.961 | 0.941 | **0.951** |
+| Task Content, Autonomy & Meaning | 3 | 268 | 39.8% | 0.881 | 0.814 | **0.846** |
+| Social Environment & Organizational Culture | 5 | 370 | 58.9% | 0.944 | 0.881 | **0.911** |
+| Workplace Resources, Health & Accessibility | 4 | 253 | 25.6% | 0.922 | 0.775 | **0.842** |
+| Location, Commuting & Mobility Benefits | 8 | 378 | 39.4% | 0.965 | 0.904 | **0.933** |
+| **Active total** | **50** | **3,390** | — | — | — | — |
+| Excluded concepts | 5 | 238 | — | — | — | — |
+| **All documented concepts** | **55** | **3,628** | — | — | — | — |
+
+**Keyword entries** count expressions assigned to each group or attribute in the supplied wordbook breakdown; they are not frequencies of occurrence in job postings. The total includes 3,390 entries assigned to active attributes and 238 entries documented under `excluded`. These are counts of category–expression entries and need not represent the number of distinct strings after deduplication across attributes.
 
 The **dictionary-positive share** is the fraction of validation vacancies with at least one dictionary match in the group, rather than the reference-label prevalence or the share of vacancies offering the benefit in reality.
 
+The largest dimension by dictionary size is **Working Time, Flexibility & Work-Life** (706 entries), followed by **Career Development & Human Capital** (473) and **Pay & Monetary Compensation** (459). At the individual-attribute level, **Workplace equipment** (155), **Organizational culture and atmosphere** (148), and **Advancement opportunities** (134) have the most entries. Dictionary size reflects the number of lexical formulations, **not** how often the benefit is advertised or how accurately it is detected.
+
 ## Files and data structure
 
-The same underlying dictionary is distributed in two representations (adjust file names here if your repository uses different names):
+The same underlying dictionary is distributed in two representations (the filenames below can be adjusted to match the repository):
 
 | File | Format | Purpose |
 |:--|:--|:--|
@@ -91,137 +98,137 @@ The mapping to English identifiers changes the **labels**, not the German keywor
 Each dimension below can be expanded to see its definition and the attributes it contains. The 50 active attributes are mutually assigned to one of the nine dimensions; a vacancy can still match **multiple** attributes or dimensions.
 
 <details>
-<summary><strong>1. Pay &amp; Monetary Compensation</strong> — 6 attributes; group F1 = 0.935</summary>
+<summary><strong>1. Pay &amp; Monetary Compensation</strong> — 6 attributes; 459 keyword entries; group F1 = 0.935</summary>
 
 Captures positive pay statements and additional monetary compensation. Ordinary or neutral references to salary are not counted as positive salary claims; collectively bargained pay and above-tariff pay are differentiated.
 
-- **Salary** (`salary`): Positive statements about regular pay or remuneration, not neutral mentions of salary.
-- **Additional fixed payments** (`additional_fixed_payments`): Christmas or holiday payments, a thirteenth salary, and similar fixed additional payments.
-- **Collectively bargained pay** (`collectively_bargained_pay`): Pay explicitly tied to a collective agreement or formal pay scale.
-- **Bonuses** (`bonuses`): Variable, performance-, sales-, or success-dependent compensation.
-- **Allowances** (`allowances`): Additional pay for shifts, night work, weekends, locations, or functions.
-- **Above-tariff pay** (`above_tariff_pay`): Compensation explicitly above collectively agreed or customary pay rates.
+- **Salary** (`salary`; **82 keywords**): Positive statements about regular pay or remuneration, not neutral mentions of salary.
+- **Additional fixed payments** (`additional_fixed_payments`; **61 keywords**): Christmas or holiday payments, a thirteenth salary, and similar fixed additional payments.
+- **Collectively bargained pay** (`collectively_bargained_pay`; **100 keywords**): Pay explicitly tied to a collective agreement or formal pay scale.
+- **Bonuses** (`bonuses`; **106 keywords**): Variable, performance-, sales-, or success-dependent compensation.
+- **Allowances** (`allowances`; **41 keywords**): Additional pay for shifts, night work, weekends, locations, or functions.
+- **Above-tariff pay** (`above_tariff_pay`; **69 keywords**): Compensation explicitly above collectively agreed or customary pay rates.
 
 </details>
 
 <details>
-<summary><strong>2. Fringe Benefits &amp; Perks</strong> — 7 attributes; group F1 = 0.962</summary>
+<summary><strong>2. Fringe Benefits &amp; Perks</strong> — 7 attributes; 380 keyword entries; group F1 = 0.962</summary>
 
 Captures employer-provided financial or in-kind benefits in addition to regular compensation, including occupational pensions, discounts, and food or leisure perks.
 
-- **Occupational pension** (`occupational_pension`): Employer-sponsored pension plans or retirement contributions.
-- **Employee discounts** (`employee_discounts`): Discounts on the employer’s or partners’ goods and services.
-- **Sports and leisure benefits** (`sports_and_leisure_benefits`): Fitness, sports, or leisure-related benefits offered by the employer.
-- **Drinks** (`drinks`): Employer-provided drinks such as coffee, tea, or water.
-- **Food support / canteen** (`food_support_canteen`): Meal subsidies, food provision, or access to a subsidized canteen.
-- **Capital-forming benefits** (`capital_forming_benefits`): Employer contributions to employee savings plans (vermögenswirksame Leistungen).
-- **Snacks and fruit** (`snacks_and_fruit`): Employer-provided snacks, fruit, or comparable small refreshments.
+- **Occupational pension** (`occupational_pension`; **90 keywords**): Employer-sponsored pension plans or retirement contributions.
+- **Employee discounts** (`employee_discounts`; **47 keywords**): Discounts on the employer’s or partners’ goods and services.
+- **Sports and leisure benefits** (`sports_and_leisure_benefits`; **77 keywords**): Fitness, sports, or leisure-related benefits offered by the employer.
+- **Drinks** (`drinks`; **49 keywords**): Employer-provided drinks such as coffee, tea, or water.
+- **Food support / canteen** (`food_support_canteen`; **77 keywords**): Meal subsidies, food provision, or access to a subsidized canteen.
+- **Capital-forming benefits** (`capital_forming_benefits`; **15 keywords**): Employer contributions to employee savings plans (vermögenswirksame Leistungen).
+- **Snacks and fruit** (`snacks_and_fruit`; **25 keywords**): Employer-provided snacks, fruit, or comparable small refreshments.
 
 </details>
 
 <details>
-<summary><strong>3. Working Time, Flexibility &amp; Work-Life</strong> — 10 attributes; group F1 = 0.950</summary>
+<summary><strong>3. Working Time, Flexibility &amp; Work-Life</strong> — 10 attributes; 706 keyword entries; group F1 = 0.950</summary>
 
 Covers spatial and temporal flexibility, leave, family support, and advertised work-life compatibility. Flexibility and schedule predictability are deliberately distinguished.
 
-- **Flexible working hours** (`flexible_working_hours`): Employee discretion over working-time arrangements, such as flexitime.
-- **At least 30 days of vacation** (`at_least_30_days_of_vacation`): An explicitly advertised vacation entitlement of 30 days or more.
-- **Remote work** (`remote_work`): Home office, mobile work, or other remote-work arrangements.
-- **Family and care benefits** (`family_and_care_benefits`): Concrete assistance with childcare, elder care, or other family responsibilities.
-- **Family-friendliness** (`family_friendliness`): Explicit statements that the employer or workplace is family-friendly.
-- **Work-life balance** (`work_life_balance`): An explicitly promoted balance between work and private life.
-- **Additional leave** (`additional_leave`): Additional paid or special leave beyond ordinary vacation entitlements.
-- **Part-time option** (`part_time_option`): An explicitly offered part-time work arrangement.
-- **Predictable and regular working hours** (`predictable_and_regular_working_hours`): Stable, reliable, or predictable schedules, distinct from flexible scheduling.
-- **Working week below 40 hours** (`working_week_below_40_hours`): An explicitly offered standard working week shorter than 40 hours.
+- **Flexible working hours** (`flexible_working_hours`; **102 keywords**): Employee discretion over working-time arrangements, such as flexitime.
+- **At least 30 days of vacation** (`at_least_30_days_of_vacation`; **62 keywords**): An explicitly advertised vacation entitlement of 30 days or more.
+- **Remote work** (`remote_work`; **38 keywords**): Home office, mobile work, or other remote-work arrangements.
+- **Family and care benefits** (`family_and_care_benefits`; **109 keywords**): Concrete assistance with childcare, elder care, or other family responsibilities.
+- **Family-friendliness** (`family_friendliness`; **45 keywords**): Explicit statements that the employer or workplace is family-friendly.
+- **Work-life balance** (`work_life_balance`; **78 keywords**): An explicitly promoted balance between work and private life.
+- **Additional leave** (`additional_leave`; **92 keywords**): Additional paid or special leave beyond ordinary vacation entitlements.
+- **Part-time option** (`part_time_option`; **31 keywords**): An explicitly offered part-time work arrangement.
+- **Predictable and regular working hours** (`predictable_and_regular_working_hours`; **80 keywords**): Stable, reliable, or predictable schedules, distinct from flexible scheduling.
+- **Working week below 40 hours** (`working_week_below_40_hours`; **69 keywords**): An explicitly offered standard working week shorter than 40 hours.
 
 </details>
 
 <details>
-<summary><strong>4. Employment Security</strong> — 2 attributes; group F1 = 0.924</summary>
+<summary><strong>4. Employment Security</strong> — 2 attributes; 103 keyword entries; group F1 = 0.924</summary>
 
 Captures the security of the employment relationship, distinct from opportunities for career progression.
 
-- **Permanent employment contract** (`permanent_employment_contract`): An explicitly offered open-ended employment contract.
-- **Job security** (`job_security`): Explicitly advertised stable, secure, or crisis-resistant employment.
+- **Permanent employment contract** (`permanent_employment_contract`; **36 keywords**): An explicitly offered open-ended employment contract.
+- **Job security** (`job_security`; **67 keywords**): Explicitly advertised stable, secure, or crisis-resistant employment.
 
 </details>
 
 <details>
-<summary><strong>5. Career Development &amp; Human Capital</strong> — 5 attributes; group F1 = 0.951</summary>
+<summary><strong>5. Career Development &amp; Human Capital</strong> — 5 attributes; 473 keyword entries; group F1 = 0.951</summary>
 
 Captures opportunities to acquire skills or advance professionally; training, general development, mentoring, and promotions are separate concepts.
 
-- **Training** (`training`): Courses, qualifications, and other structured learning opportunities.
-- **General development opportunities** (`general_development_opportunities`): Opportunities for personal or professional growth without a specific promotion promise.
-- **Onboarding** (`onboarding`): Structured induction and support during entry into a new position.
-- **Advancement opportunities** (`advancement_opportunities`): Explicit prospects for promotion or career progression.
-- **Coaching and mentoring** (`coaching_and_mentoring`): Coaching, mentorship, or comparable individualized support.
+- **Training** (`training`; **98 keywords**): Courses, qualifications, and other structured learning opportunities.
+- **General development opportunities** (`general_development_opportunities`; **88 keywords**): Opportunities for personal or professional growth without a specific promotion promise.
+- **Onboarding** (`onboarding`; **88 keywords**): Structured induction and support during entry into a new position.
+- **Advancement opportunities** (`advancement_opportunities`; **134 keywords**): Explicit prospects for promotion or career progression.
+- **Coaching and mentoring** (`coaching_and_mentoring`; **65 keywords**): Coaching, mentorship, or comparable individualized support.
 
 </details>
 
 <details>
-<summary><strong>6. Task Content, Autonomy &amp; Meaning</strong> — 3 attributes; group F1 = 0.846</summary>
+<summary><strong>6. Task Content, Autonomy &amp; Meaning</strong> — 3 attributes; 268 keyword entries; group F1 = 0.846</summary>
 
 Captures intrinsic attributes of the job itself, such as variety, decision-making discretion, and purpose.
 
-- **Interesting and varied tasks** (`interesting_and_varied_tasks`): Diverse, stimulating, or otherwise explicitly interesting job tasks.
-- **Autonomy and discretion** (`autonomy_and_discretion`): Independent decision-making, responsibility, or freedom to shape work.
-- **Meaningful work** (`meaningful_work`): Explicitly meaningful work or social purpose associated with the role.
+- **Interesting and varied tasks** (`interesting_and_varied_tasks`; **86 keywords**): Diverse, stimulating, or otherwise explicitly interesting job tasks.
+- **Autonomy and discretion** (`autonomy_and_discretion`; **110 keywords**): Independent decision-making, responsibility, or freedom to shape work.
+- **Meaningful work** (`meaningful_work`; **72 keywords**): Explicitly meaningful work or social purpose associated with the role.
 
 </details>
 
 <details>
-<summary><strong>7. Social Environment &amp; Organizational Culture</strong> — 5 attributes; group F1 = 0.911</summary>
+<summary><strong>7. Social Environment &amp; Organizational Culture</strong> — 5 attributes; 370 keyword entries; group F1 = 0.911</summary>
 
 Captures positively advertised social and organizational conditions. Claims about culture and inclusion are treated as employer statements, not verified employee experiences.
 
-- **Organizational culture and atmosphere** (`organizational_culture_and_atmosphere`): Positive descriptions of the workplace culture, climate, or atmosphere.
-- **Team quality** (`team_quality`): Positive statements about colleagues, cooperation, or the team.
-- **Flat hierarchies** (`flat_hierarchies`): An explicitly non-hierarchical or flat organizational structure.
-- **Company events** (`company_events`): Social events, outings, and employer-organized gatherings.
-- **Diversity and inclusion** (`diversity_and_inclusion`): An explicit positive commitment to an inclusive or diverse workplace, not merely a generic legal disclaimer.
+- **Organizational culture and atmosphere** (`organizational_culture_and_atmosphere`; **148 keywords**): Positive descriptions of the workplace culture, climate, or atmosphere.
+- **Team quality** (`team_quality`; **77 keywords**): Positive statements about colleagues, cooperation, or the team.
+- **Flat hierarchies** (`flat_hierarchies`; **48 keywords**): An explicitly non-hierarchical or flat organizational structure.
+- **Company events** (`company_events`; **52 keywords**): Social events, outings, and employer-organized gatherings.
+- **Diversity and inclusion** (`diversity_and_inclusion`; **45 keywords**): An explicit positive commitment to an inclusive or diverse workplace, not merely a generic legal disclaimer.
 
 </details>
 
 <details>
-<summary><strong>8. Workplace Resources, Health &amp; Accessibility</strong> — 4 attributes; group F1 = 0.842</summary>
+<summary><strong>8. Workplace Resources, Health &amp; Accessibility</strong> — 4 attributes; 253 keyword entries; group F1 = 0.842</summary>
 
 Captures advertised workplace resources, health initiatives, and accessibility. Some items (e.g., equipment) may also be necessary production inputs.
 
-- **Health management** (`health_management`): Health and well-being initiatives, including employer-provided health-management activities.
-- **Workplace equipment** (`workplace_equipment`): The provision or quality of workplace equipment and facilities.
-- **Employer-provided digital devices** (`employer_provided_digital_devices`): Laptops, mobile phones, or comparable devices provided by the employer.
-- **Workplace accessibility** (`workplace_accessibility`): Explicit accessibility of the workplace or facilities.
+- **Health management** (`health_management`; **56 keywords**): Health and well-being initiatives, including employer-provided health-management activities.
+- **Workplace equipment** (`workplace_equipment`; **155 keywords**): The provision or quality of workplace equipment and facilities.
+- **Employer-provided digital devices** (`employer_provided_digital_devices`; **29 keywords**): Laptops, mobile phones, or comparable devices provided by the employer.
+- **Workplace accessibility** (`workplace_accessibility`; **13 keywords**): Explicit accessibility of the workplace or facilities.
 
 </details>
 
 <details>
-<summary><strong>9. Location, Commuting &amp; Mobility Benefits</strong> — 8 attributes; group F1 = 0.933</summary>
+<summary><strong>9. Location, Commuting &amp; Mobility Benefits</strong> — 8 attributes; 378 keyword entries; group F1 = 0.933</summary>
 
 Captures commuting convenience and employer mobility support. Company cars are grouped here in the baseline; an alternative specification can assign them to fringe benefits.
 
-- **Bicycle scheme** (`bicycle_scheme`): Employer-supported bicycles or bike-leasing schemes.
-- **Public-transport ticket** (`public_transport_ticket`): Employer-provided or subsidized public-transport tickets.
-- **Transport accessibility** (`transport_accessibility`): Favorable access to the workplace via public transport or road networks.
-- **Parking** (`parking`): Availability of parking facilities.
-- **Company car** (`company_car`): An explicitly offered company car, excluding unambiguously shared pool vehicles.
-- **Mobility subsidy** (`mobility_subsidy`): Financial support for commuting or transport expenses.
-- **Free parking** (`free_parking`): Parking explicitly offered without charge; may also count as parking.
-- **Housing and relocation support** (`housing_and_relocation_support`): Employer assistance with accommodation or relocation costs.
+- **Bicycle scheme** (`bicycle_scheme`; **57 keywords**): Employer-supported bicycles or bike-leasing schemes.
+- **Public-transport ticket** (`public_transport_ticket`; **80 keywords**): Employer-provided or subsidized public-transport tickets.
+- **Transport accessibility** (`transport_accessibility`; **40 keywords**): Favorable access to the workplace via public transport or road networks.
+- **Parking** (`parking`; **17 keywords**): Availability of parking facilities.
+- **Company car** (`company_car`; **25 keywords**): An explicitly offered company car, excluding unambiguously shared pool vehicles.
+- **Mobility subsidy** (`mobility_subsidy`; **67 keywords**): Financial support for commuting or transport expenses.
+- **Free parking** (`free_parking`; **37 keywords**): Parking explicitly offered without charge; may also count as parking.
+- **Housing and relocation support** (`housing_and_relocation_support`; **55 keywords**): Employer assistance with accommodation or relocation costs.
 
 </details>
 
 <details>
-<summary><strong>Excluded concepts</strong> — 5 documented attributes, not part of baseline aggregates</summary>
+<summary><strong>Excluded concepts</strong> — 5 documented attributes; 238 keyword entries, not part of baseline aggregates</summary>
 
 These categories remain visible in the exported wordbook for transparency and diagnostic use, but they are **not** included in the nine analytic dimensions or the 50 active attributes.
 
-- **Generic social benefits** (`generic_social_benefits`): Generic references to social benefits without a sufficiently specific offer.
-- **Insurance benefits** (`insurance_benefits`): Insurance-related claims that do not reliably distinguish voluntary benefits from ordinary entitlements.
-- **Protective equipment** (`protective_equipment`): Protective clothing or safety equipment that may be operationally or legally required.
-- **International work environment** (`international_work_environment`): International workplace descriptions rather than a clearly defined individual amenity.
-- **Co-determination** (`co_determination`): References to employee representation or codetermination, excluded from the baseline amenity measure.
+- **Generic social benefits** (`generic_social_benefits`; **24 keywords**): Generic references to social benefits without a sufficiently specific offer.
+- **Insurance benefits** (`insurance_benefits`; **62 keywords**): Insurance-related claims that do not reliably distinguish voluntary benefits from ordinary entitlements.
+- **Protective equipment** (`protective_equipment`; **59 keywords**): Protective clothing or safety equipment that may be operationally or legally required.
+- **International work environment** (`international_work_environment`; **70 keywords**): International workplace descriptions rather than a clearly defined individual amenity.
+- **Co-determination** (`co_determination`; **23 keywords**): References to employee representation or codetermination, excluded from the baseline amenity measure.
 
 </details>
 
