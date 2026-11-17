@@ -11,8 +11,7 @@
 2. [Files and data structure](#files-and-data-structure)
 3. [Taxonomy and attribute definitions](#taxonomy-and-attribute-definitions)
 4. [How the dictionary was constructed](#how-the-dictionary-was-constructed)
-5. [LLM coding prompt](#llm-coding-prompt)
-6. [Validation design and key findings](#validation-design-and-key-findings)
+5. [Validation design](#validation-design-and-key-findings)
 
 ### Validation summary by dimension
 
@@ -227,31 +226,13 @@ The procedure consists of four stages:
 
 2. **Classify the development sample twice.** We apply the initial dictionary and **Qwen 3.8 27B** independently to the same development sample of **more than 10,000 vacancies**. The language model receives the attribute-specific definitions and coding instructions and determines whether each benefit is present. For each positive classification, it is required to provide the supporting passage from the advertisement; it also flags potentially relevant benefits or formulations not yet captured by the dictionary. Comparing the dictionary's explicit keyword matches with these evidence-based semantic classifications reveals both **false negatives** (phrases consistent with the definition but absent from the dictionary) and **false positives** (matches whose meaning does not satisfy the definition). The LLM is a reference for *development and comparison*, not a component of the final dictionary-based classifier.
 
-3. **Refine the dictionary and prompt iteratively.** We examine differences between the two classifications, particularly the textual evidence returned by the language model. Promising new expressions are evaluated for inclusion, while existing expressions that systematically match the wrong context are considered for revision or removal. We assess candidate changes using **precision, recall, and especially the F1 score** against the semantic reference classification, rather than maximizing the raw number of matches. Refinement also concerns the coding instructions: systematic disagreements can reveal ambiguous definitions, prompting sharper rules for distinctions such as family-friendliness versus concrete family and care benefits, team quality versus organizational culture, or accessibility versus generic diversity statements. ChatGPT is additionally used as a consistency aid when assessing whether candidate expressions fit the intended semantic category. The dictionary and prompt are thus improved together, while category assignments and inclusion decisions remain researcher-controlled.
+3. **Refine the dictionary and prompt iteratively.** We examine differences between the two classifications, particularly the textual evidence returned by the language model. Promising new expressions are evaluated for inclusion, while existing expressions that systematically match the wrong context are considered for revision or removal. We assess candidate changes using **precision, recall, and especially the F1 score** against the semantic reference classification, rather than maximizing the raw number of matches. Refinement also concerns the coding instructions: systematic disagreements can reveal ambiguous definitions, prompting sharper rules for distinctions such as family-friendliness versus concrete family and care benefits, team quality versus organizational culture, or accessibility versus generic diversity statements. ChatGPT is additionally used as a consistency aid when assessing whether candidate expressions fit the intended semantic category. The dictionary and prompt are thus improved together, while category assignments and inclusion decisions remain researcher-controlled. Final prompt can be found here: **[View the complete coding prompt →](classification_prompt.md)**
 
 4. **Freeze and validate on unseen data.** Once the dictionary sufficiently reproduces the LLM-based classification during development, we **freeze the taxonomy, the coding prompt, and the keyword lists**. We then independently apply the final dictionary and the frozen Qwen coding procedure to an **out-of-sample holdout of 14,481 advertisements**. None of these held-out observations is used for adding or removing keywords, choosing thresholds, or refining prompts or category definitions. We calculate precision, recall, and F1 for each attribute and for each of the nine aggregate dimensions, where a dimension is positive if any constituent attribute is identified. The detailed results are shown in the expandable taxonomy tables above and interpreted in the [validation section](#validation-design-and-key-findings) below.
 
 The aim of this process is **not to label every conceivable mention** of a benefit: expressions are retained only where they are consistent with the substantive category definitions. The finished wordbook can therefore be applied transparently and deterministically to the full corpus of approximately **11.4 million vacancy advertisements**, **without running an LLM on individual vacancies**. As with any lexical approach, it may miss unusual paraphrases or context-specific statements; the reported validation measures describe agreement with the frozen semantic reference classification, not verified realized working conditions.
 
-## LLM coding prompt
-
-<details>
-<summary><strong>Expand: LLM instructions, category definitions and output format</strong></summary>
-
-The full **German-language prompt** used for the semantic classification is published separately as [`classification_prompt.md`](classification_prompt.md), rather than embedded in full in this README. It contains the two original prompt components:
-
-- **`prompt1` — Coding instructions and category definitions:** a multi-label task; explicit evidence required for positive classifications; exclusion of applicant requirements, negated statements, statutory minimum standards and unsupported inferences; distinctions between closely related attributes; and an additional check for benefits not covered by the taxonomy.
-- **`prompt2` — JSON output specification:** report only positively detected benefit categories with a short original evidence excerpt and a confidence value from 0 to 1, plus an `unassigned_benefit_evidence` list for potential new concepts. Omitted benefit keys indicate negative classifications.
-
-The vacancy text is inserted after the `STELLENANZEIGE:` marker at the end of `prompt1`, before the output instructions in `prompt2`.
-
-**Important for replication:** The original prompt uses German category keys such as `gehalt`, `remote` and `altersvorsorge`, whereas the published wordbook uses English `snake_case` keys such as `salary`, `remote_work` and `occupational_pension`. These identifiers require a category crosswalk when comparing LLM output with the exported CSV/JSON wordbook. The full prompt file preserves the supplied wording and identifiers.
-
-**[View the complete coding prompt →](classification_prompt.md)**
-
-</details>
-
-## Validation design and key findings
+## Validation design
 
 ### Out-of-sample evaluation
 
@@ -266,11 +247,3 @@ For a given attribute, the reported metrics are:
 
 Group-level metrics are calculated after aggregating constituent attributes with the logical OR rule; they are **not averages** of the individual attribute metrics. The positive share therefore need not equal the sum of individual shares.
 **Table note.** Positive share is the share of the validation sample identified as positive by the **dictionary**, `(TP + FP) / N` with `N = 14,481`. Precision, recall, and F1 are evaluated relative to the reference classification. Group-level indicators equal one if any constituent attribute is present. Excluded concepts are reported for transparency only.
-
-### Interpretation of the results
-
-Across the **nine aggregate dimensions**, F1 scores range from **0.842** (*Workplace Resources, Health & Accessibility*) to **0.962** (*Fringe Benefits & Perks*), with seven of the nine dimensions above **0.91**. Aggregate precision ranges from **0.881** to **0.972**. This close correspondence supports the use of the frozen dictionary as a scalable approximation to the reference coding procedure.
-
-Performance varies more strongly at the attribute level. Relatively concrete, standardized offers are identified particularly well, including `occupational_pension` (F1 = **0.974**), `at_least_30_days_of_vacation` (**0.962**), `remote_work` (**0.945**), `bicycle_scheme` (**0.954**), and `permanent_employment_contract` (**0.960**). More abstract or heterogeneous expressions tend to be harder to retrieve: for example, `meaningful_work` has recall **0.371** and F1 **0.531**, while `workplace_equipment` has recall **0.573** and F1 **0.682**. These differences underscore the intended precision-oriented, conservative character of the wordbook.
-
-Importantly, the measures capture **attributes that employers choose to advertise**, not the full set of conditions actually provided to employees. A negative dictionary result can mean that an offer was not advertised, that no benefit section was available, or that a relevant formulation was not covered by the final expressions. The evaluation assesses the reproducibility of the semantic coding framework by the dictionary; it does not establish the underlying truth of employers' claims.
